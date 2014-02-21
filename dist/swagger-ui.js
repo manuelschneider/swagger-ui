@@ -1186,7 +1186,8 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 (function() {
   var ContentTypeView, HeaderView, MainView, OperationView, ParameterContentTypeView, ParameterView, ResourceView, ResponseContentTypeView, SignatureView, StatusCodeView, SwaggerUi, _ref, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9,
     __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   SwaggerUi = (function(_super) {
     __extends(SwaggerUi, _super);
@@ -1341,26 +1342,12 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     }
 
     HeaderView.prototype.events = {
-      'click #show-pet-store-icon': 'showPetStore',
-      'click #show-wordnik-dev-icon': 'showWordnikDev',
       'click #explore': 'showCustom',
       'keyup #input_baseUrl': 'showCustomOnKeyup',
       'keyup #input_apiKey': 'showCustomOnKeyup'
     };
 
     HeaderView.prototype.initialize = function() {};
-
-    HeaderView.prototype.showPetStore = function(e) {
-      return this.trigger('update-swagger-ui', {
-        url: "http://petstore.swagger.wordnik.com/api/api-docs"
-      });
-    };
-
-    HeaderView.prototype.showWordnikDev = function(e) {
-      return this.trigger('update-swagger-ui', {
-        url: "http://api.wordnik.com/v4/resources.json"
-      });
-    };
 
     HeaderView.prototype.showCustomOnKeyup = function(e) {
       if (e.keyCode === 13) {
@@ -1492,7 +1479,21 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     OperationView.prototype.initialize = function() {};
 
     OperationView.prototype.render = function() {
-      var contentTypeModel, isMethodSubmissionSupported, param, responseContentTypeView, responseSignatureView, signatureModel, statusCode, type, _i, _j, _k, _len, _len1, _len2, _ref5, _ref6, _ref7;
+      var contentTypeModel, i, isMethodSubmissionSupported, param, paramsToRemove, responseContentTypeView, responseSignatureView, signatureModel, statusCode, type, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref10, _ref5, _ref6, _ref7, _ref8, _ref9;
+      paramsToRemove = [];
+      _ref5 = this.model.parameters;
+      for (i = _i = 0, _len = _ref5.length; _i < _len; i = ++_i) {
+        param = _ref5[i];
+        log(param);
+        if (param.paramType === 'header' && (_ref6 = param.name, __indexOf.call(window.swaggerConfig.headerAuthParams, _ref6) >= 0)) {
+          paramsToRemove.push(i);
+        }
+      }
+      _ref7 = paramsToRemove.reverse();
+      for (_j = 0, _len1 = _ref7.length; _j < _len1; _j++) {
+        i = _ref7[_j];
+        this.model.parameters.splice(i, 1);
+      }
       isMethodSubmissionSupported = true;
       if (!isMethodSubmissionSupported) {
         this.model.isReadOnly = true;
@@ -1517,9 +1518,9 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       };
       contentTypeModel.consumes = this.model.consumes;
       contentTypeModel.produces = this.model.produces;
-      _ref5 = this.model.parameters;
-      for (_i = 0, _len = _ref5.length; _i < _len; _i++) {
-        param = _ref5[_i];
+      _ref8 = this.model.parameters;
+      for (_k = 0, _len2 = _ref8.length; _k < _len2; _k++) {
+        param = _ref8[_k];
         type = param.type || param.dataType;
         if (type.toLowerCase() === 'file') {
           if (!contentTypeModel.consumes) {
@@ -1532,14 +1533,14 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
         model: contentTypeModel
       });
       $('.response-content-type', $(this.el)).append(responseContentTypeView.render().el);
-      _ref6 = this.model.parameters;
-      for (_j = 0, _len1 = _ref6.length; _j < _len1; _j++) {
-        param = _ref6[_j];
+      _ref9 = this.model.parameters;
+      for (_l = 0, _len3 = _ref9.length; _l < _len3; _l++) {
+        param = _ref9[_l];
         this.addParameter(param, contentTypeModel.consumes);
       }
-      _ref7 = this.model.responseMessages;
-      for (_k = 0, _len2 = _ref7.length; _k < _len2; _k++) {
-        statusCode = _ref7[_k];
+      _ref10 = this.model.responseMessages;
+      for (_m = 0, _len4 = _ref10.length; _m < _len4; _m++) {
+        statusCode = _ref10[_m];
         this.addStatusCode(statusCode);
       }
       return this;

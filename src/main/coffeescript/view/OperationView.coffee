@@ -11,6 +11,14 @@ class OperationView extends Backbone.View
   initialize: ->
 
   render: ->
+    paramsToRemove = []
+    for param, i in @model.parameters
+      log(param)
+      if param.paramType is 'header' and param.name in window.swaggerConfig.headerAuthParams
+        paramsToRemove.push(i)
+    for i in paramsToRemove.reverse()
+      @model.parameters.splice(i,1)
+
     isMethodSubmissionSupported = true #jQuery.inArray(@model.method, @model.supportedSubmitMethods) >= 0
     @model.isReadOnly = true unless isMethodSubmissionSupported
 
