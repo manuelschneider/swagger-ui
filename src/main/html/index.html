@@ -44,7 +44,22 @@
             window.authorizations.add(param.toLowerCase(), new ApiKeyAuthorization(param.toLowerCase(), key, "header"));
           }
         });
+        $('#input_'+param).keyup(function(e) {
+          e.preventDefault()
+          if (e.keyCode === 13) {
+            var key = $('#input_'+param)[0].value;
+            if (key === "") {
+              window.authorizations.add(param.toLowerCase(), new ApiKeyAuthorization(param.toLowerCase(), key, "header"));
+            }
+            $("#explore").click()
+          }
+          return false;
+        });
       }
+
+      $('#api_selector').submit(function(e) {
+        return false;
+      })
 
       window.swaggerUi.load();
     });

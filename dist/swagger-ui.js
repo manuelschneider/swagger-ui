@@ -1366,18 +1366,10 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     }
 
     HeaderView.prototype.events = {
-      'click #explore': 'showCustom',
-      'keyup #input_baseUrl': 'showCustomOnKeyup',
-      'keyup #input_apiKey': 'showCustomOnKeyup'
+      'click #explore': 'showCustom'
     };
 
     HeaderView.prototype.initialize = function() {};
-
-    HeaderView.prototype.showCustomOnKeyup = function(e) {
-      if (e.keyCode === 13) {
-        return this.showCustom();
-      }
-    };
 
     HeaderView.prototype.showCustom = function(e) {
       if (e != null) {

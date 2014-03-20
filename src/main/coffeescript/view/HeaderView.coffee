@@ -1,14 +1,9 @@
 class HeaderView extends Backbone.View
   events: {
     'click #explore'                : 'showCustom'
-    'keyup #input_baseUrl'          : 'showCustomOnKeyup'
-    'keyup #input_apiKey'           : 'showCustomOnKeyup'
   }
 
   initialize: ->
-
-  showCustomOnKeyup: (e) ->
-    @showCustom() if e.keyCode is 13
 
   showCustom: (e) ->
     e?.preventDefault()
