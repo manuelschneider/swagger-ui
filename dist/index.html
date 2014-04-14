@@ -19,6 +19,10 @@
     $(function () {
       $.getJSON("config.json", function (config) {
         window.swaggerConfig = config
+        if (config.server.substring(0,1) !== "/" && config.server.substring(0,7) !== "http://" && 
+          config.server.substring(0,8) !== "https://") {
+          config.server = location.href.substring(0,location.href.lastIndexOf("/") + 1) + config.server;
+        }
         window.swaggerUi = new SwaggerUi({
         url: config.server,
         dom_id: "swagger-ui-container",
